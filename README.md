@@ -1,5 +1,5 @@
 # YN360_webbtle
-Example code for controlling YN360 Light wand via Web Bluetooth (LE) API
+Example code for controlling Yongnuo YN360 Light wand via Web Bluetooth (LE) API
 
 Note: unfortunately, **requires Google Chrome**.
 
