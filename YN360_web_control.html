@@ -1,0 +1,371 @@
+<html>
+<head>
+	<style>
+	/* http://meyerweb.com/eric/tools/css/reset/ 
+	   v2.0 | 20110126
+	   License: none (public domain)
+	*/
+
+	html, body, div, span, applet, object, iframe,
+	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+	a, abbr, acronym, address, big, cite, code,
+	del, dfn, em, img, ins, kbd, q, s, samp,
+	small, strike, strong, sub, sup, tt, var,
+	b, u, i, center,
+	dl, dt, dd, ol, ul, li,
+	fieldset, form, label, legend,
+	table, caption, tbody, tfoot, thead, tr, th, td,
+	article, aside, canvas, details, embed, 
+	figure, figcaption, footer, header, hgroup, 
+	menu, nav, output, ruby, section, summary,
+	time, mark, audio, video {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-size: 100%;
+		font: inherit;
+		vertical-align: baseline;
+	}
+	/* HTML5 display-role reset for older browsers */
+	article, aside, details, figcaption, figure, 
+	footer, header, hgroup, menu, nav, section {
+		display: block;
+	}
+	body {
+		line-height: 1;
+	}
+	ol, ul {
+		list-style: none;
+	}
+	blockquote, q {
+		quotes: none;
+	}
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none;
+	}
+	table {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+
+
+	/* ----------------------------------------------------- */
+	body {display: flex; flex-direction:column; justify-content:space-between; height:100%;}
+
+	#header, #content, #footer {text-align:center;}
+
+	#header, #footer {width:100%;  text-align:center; padding:10px 0px; background:#CCC;}
+	#header {height:24px;}
+	#footer {height:20px;}
+	#header h1 {font-size:24px;}
+
+	#colorGrid {display:block; height:60px; width:240px; background:#CCC; border:1px solid black; margin:10px; padding 0px;}
+	#colorGrid div.row {display:block; width:240px; height:30px; margin:0px; padding 0px;}
+	#colorGrid div.row div.box {display:block; float:left; width:30px; height: 30px; margin:0px; padding 0px;}
+
+	#modeselect { background:#CCC; padding:16px; margin-bottom:16px;}
+	#setColorMode, #setToneMode {display:inline-box;padding:5px; margin:5px; border-radius:5px; background: #FFF; border: 3px solid white}
+	#setColorMode {border: 3px solid black}
+	.colorsection span {display: inline-block; width:50px; text-align:right;}
+	.whitesection span {display: inline-block; width:150px; text-align:right;}
+
+
+	#connected, #disconnectButton, #tonesection {display:none;}
+	#disconnectButton, #connectButton {position:absolute; right:4px; margin:0px 2px; padding:4px; font-weight:bold;}
+
+	#connected {max-width:800px; max-height:350px;  padding-bottom:8px ; margin:0px auto; text-align:center; border:1px solid #999; border-radius:5px;   }
+
+	#colorButton, #toneButton {margin:10px;}
+
+	</style>
+
+</head>
+
+<body>
+    
+    <div id="header"><input class="button" type="button" id="connectButton" value="Connect" /><input class="button" type="button" id="disconnectButton" value="Disconnect" /><h1>Yongnuo YN360 Controller</h1></div>
+
+	<div id="connected">
+			
+		<div id="modeselect"><span id="setColorMode">Colours🎨</span><span id="setToneMode">White Tones 💡</span></div>
+		
+		<div id="rgbsection" >
+		
+				<input id="colorPicker" type="color" style="width:130px; height:50px;"/>
+				<br/><br/>
+				
+				
+				<div id="redsection" class="colorsection"><span>Red: </span>
+					<input id="redhex" type="text" maxlength="3" size="3" value="0"/><input type="range" min="1" max="255" value="0" class="slider" id="redhexslider">
+				</div>
+				<div id="bluesection" class="colorsection"><span>Blue: </span>
+					<input id="bluehex" type="text" maxlength="3" size="3" value="0"/><input type="range" min="1" max="255" value="0" class="slider" id="bluehexslider">
+				</div>
+				<div id="greensection" class="colorsection"><span>Green: </span>
+					<input id="greenhex" type="text" maxlength="3" size="3" value="0"/><input type="range" min="1" max="255" value="0" class="slider" id="greenhexslider">
+				</div>
+			   
+
+				<div id="colorGrid">
+					<div class="row">
+						<div class="box" onclick="setColor('#00FFFF')" style="background:#00FFFF" ></div>
+						<div class="box" onclick="setColor('#FF00FF')" style="background:#FF00FF" ></div>
+						<div class="box" onclick="setColor('#FFFF00')" style="background:#FFFF00" ></div>
+						<div class="box" onclick="setColor('#0000FF')" style="background:#0000FF" ></div>
+						<div class="box" onclick="setColor('#FF0000')" style="background:#FF0000" ></div>
+						<div class="box" onclick="setColor('#00FF00')" style="background:#00FF00" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+					</div>
+					<div class="row">
+						<div class="box" onclick="setColor('#000000')" style="background:#000000" ></div>
+						<div class="box" onclick="setColor('#404040')" style="background:#404040" ></div>
+						<div class="box" onclick="setColor('#808080')" style="background:#808080" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+						<div class="box" onclick="setColor('#FFFFFF')" style="background:#FFFFFF" ></div>
+					</div>
+				</div>
+
+				<input class="button" type="button" id="colorButton" value="Send Colour" /> <input class="button" type="button" id="offColorButton" value="Off" />
+			
+		</div>
+				
+		<div id="tonesection" >
+				<div id="warmsection" class="whitesection"><span>Warm White (5500k): </span>
+					<input id="warmhex" type="text" maxlength="3" size="3" value="0" /><input type="range" min="0" max="99" value="0" class="slider" id="warmhexslider">
+				</div>
+				<div id="coolsection" class="whitesection"><span>Cool White (3200k): </span>
+					<input id="coolhex" type="text" maxlength="3" size="3" value="0" /><input type="range" min="0" max="99" value="0" class="slider" id="coolhexslider">
+				</div>
+				
+				<input class="button" type="button" id="toneButton" value="Set Light" /> <input class="button" type="button" id="offToneButton" value="Off" />
+		</div>
+	  		
+	</div>
+    
+	<div id="bottom" >
+		<div style="padding:5px;">
+			<hr/>
+			<p>v 1.0, 09/12/20, Last Command: <span id="deviceHeartbeat"></span></p>
+		</div>
+		<div id="footer">
+			<div><a href="https://samuelpinches.com.au">Samuel Pinches</a>, Dec 2020 </div>
+		</div>
+	</div>
+
+
+<script>
+const zeroPad = (num, places) => String(num).padStart(places, '0')
+
+const connectButton = document.getElementById('connectButton');
+const disconnectButton = document.getElementById('disconnectButton');
+const setColorMode = document.getElementById('setColorMode');
+const setToneMode = document.getElementById('setToneMode');
+const rgbsection = document.getElementById('rgbsection');
+const colorPicker = document.getElementById('colorPicker');
+const colorButton = document.getElementById('colorButton');
+const tonesection = document.getElementById('tonesection');
+const toneButton = document.getElementById('toneButton');
+
+const coolhex = document.getElementById('coolhex');
+const coolhexslider = document.getElementById('coolhexslider');
+const warmhex = document.getElementById('warmhex');
+const warmhexslider = document.getElementById('warmhexslider');
+
+const redhex = document.getElementById('redhex');
+const redhexslider = document.getElementById('redhexslider');
+const greenhex = document.getElementById('greenhex');
+const greenhexslider = document.getElementById('greenhexslider');
+const bluehex = document.getElementById('bluehex');
+const bluehexslider = document.getElementById('bluehexslider');
+
+const deviceHeartbeat = document.getElementById('deviceHeartbeat');
+const primaryServiceUuid = 'f000aa60-0451-4000-b000-000000000000';
+const receiveCharUuid = 'f000aa63-0451-4000-b000-000000000000';
+const sendCharUuid = 'f000aa61-0451-4000-b000-000000000000';
+
+
+ setColorMode.onclick = function(){
+     
+    rgbsection.style.display = 'block';
+    tonesection.style.display = 'none';
+    setColorMode.style.border = "3px solid black"
+    setToneMode.style.border = "3px solid white"
+ }; 
+
+ setToneMode.onclick = function(){
+    rgbsection.style.display = 'none';
+    tonesection.style.display = 'block';
+    setColorMode.style.border = "3px solid white"
+    setToneMode.style.border = "3px solid black"
+ }; 
+
+redhex.onchange = function(){if(redhex.value>255){redhex.value = 255;} redhexslider.value = redhex.value; updateColorPicker();}
+redhexslider.onchange = function(){redhex.value = redhexslider.value; updateColorPicker();}
+bluehex.onchange = function(){if(bluehex.value>255){bluehex.value = 255;}bluehexslider.value = bluehex.value; updateColorPicker();}
+bluehexslider.onchange = function(){bluehex.value = bluehexslider.value; updateColorPicker();}
+greenhex.onchange = function(){if(greenhex.value>255){greenhex.value = 255;} greenhexslider.value = greenhex.value; updateColorPicker();}
+greenhexslider.onchange = function(){greenhex.value = greenhexslider.value; updateColorPicker();}
+
+function updateColorPicker(){
+colorPicker.value =  rgbToHex(redhex.value,greenhex.value,bluehex.value);
+}
+
+coolhex.onchange = function(){if(coolhex.value>99){coolhex.value = 99;} coolhexslider.value = coolhex.value;}
+coolhexslider.onchange = function(){coolhex.value = coolhexslider.value;}
+warmhex.onchange = function(){if(warmhex.value>99){warmhex.value = 99;}warmhexslider.value = warmhex.value;}
+warmhexslider.onchange = function(){warmhex.value = warmhexslider.value;}
+
+
+let device, sendCharacteristic, receiveCharacteristic;
+connectButton.onclick = async () => {
+  device = await navigator.bluetooth.requestDevice({ filters: [{ services: [primaryServiceUuid] }] });
+  const server = await device.gatt.connect();
+  const service = await server.getPrimaryService(primaryServiceUuid);
+  receiveCharacteristic = await service.getCharacteristic(receiveCharUuid);
+  sendCharacteristic = await service.getCharacteristic(sendCharUuid);
+  device.ongattserverdisconnected = disconnect;
+  listen();
+
+  connected.style.display = 'block';
+  connectButton.style.display = 'none';
+  disconnectButton.style.display = 'initial';
+};
+
+const listen = () => {
+  receiveCharacteristic.addEventListener('characteristicvaluechanged', (evt) => {
+	const value0 = evt.target.value.getUint8(0, true).toString(16);
+    const value1 = evt.target.value.getUint8(1, true).toString(16);
+    const value2 = evt.target.value.getUint8(2, true).toString(16);
+    const value3 = evt.target.value.getUint8(3, true).toString(16);
+    const value4 = evt.target.value.getUint8(4, true).toString(16);
+    const value5 = evt.target.value.getUint8(5, true).toString(16);
+
+    deviceHeartbeat.innerText = value5 + " " + value4+" "+value3+" "+value2+" "+value1+" "+value0;
+});
+  receiveCharacteristic.startNotifications();  
+};
+
+function showCommand(data){
+    const value0 = data[0].toString(16);
+    const value1 = data[1].toString(16);
+    const value2 = data[2].toString(16);
+    const value3 = data[3].toString(16);
+    const value4 = data[4].toString(16);
+    const value5 = data[5].toString(16);
+
+    deviceHeartbeat.innerText = value5 + " " + value4+" "+value3+" "+value2+" "+value1+" "+value0;
+    return;
+}
+
+
+const hexToRgb = (hex) => {
+  const r = parseInt(hex.substring(1, 3), 16); //start at 1 to avoid #
+  const g = parseInt(hex.substring(3, 5), 16);
+  const b = parseInt(hex.substring(5, 7), 16);
+    
+  return [r, g, b];
+};
+
+
+function decimalToHex(d, padding) {
+    var hex = Number(d).toString(16);
+    padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
+
+    while (hex.length < padding) {
+        hex = "0" + hex;
+    }
+    return hex;
+}
+
+const rgbToHex = (r,g,b) => {
+hex = "#"+decimalToHex(r,2)+decimalToHex(g,2)+decimalToHex(b,2);
+  return hex;
+};
+
+function setColor(hex){
+    colorPicker.value = hex;
+    rgb = hexToRgb(hex);
+    redhexslider.value = rgb[0];
+    greenhexslider.value = rgb[1];
+    bluehexslider.value = rgb[2];
+    redhex.value = rgb[0];
+    greenhex.value = rgb[1];
+    bluehex.value = rgb[2];    
+    return;
+}
+
+colorPicker.onchange = function(){
+    const rgb = hexToRgb(colorPicker.value);
+    redhexslider.value = rgb[0];
+    greenhexslider.value = rgb[1];
+    bluehexslider.value = rgb[2];
+    redhex.value = rgb[0];
+    greenhex.value = rgb[1];
+    bluehex.value = rgb[2];    
+    return;
+}
+
+colorButton.onclick = async () => {
+    
+  const rgb = hexToRgb(colorPicker.value)
+  const data = new Uint8Array([0xae,0xa1,rgb[0],rgb[1],rgb[2],0x56]); //on
+  sendCharacteristic.writeValue(data);
+  showCommand(data);
+};
+
+
+toneButton.onclick = async () => {
+  const data = new Uint8Array([0xae,0xaa,0x01,coolhex.value,warmhex.value,0x56]); //on
+  sendCharacteristic.writeValue(data);
+    showCommand(data);
+
+};
+
+
+offColorButton.onclick = async () => {
+  const rgb = hexToRgb(colorPicker.value)
+  const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
+  sendCharacteristic.writeValue(data);
+    showCommand(data);
+
+}
+
+offToneButton.onclick = async () => {
+  const rgb = hexToRgb(colorPicker.value)
+  const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
+  sendCharacteristic.writeValue(data);
+    showCommand(data);
+
+}
+
+
+
+disconnectButton.onclick = async () => {
+  await device.gatt.disconnect();
+  disconnect();
+};
+
+const disconnect = () => {
+  device = null;
+  receiveCharacteristic = null;
+  sendCharacteristic = null;
+
+  connected.style.display = 'none';
+  connectButton.style.display = 'initial';
+  disconnectButton.style.display = 'none';
+};
+
+
+</script>
+
+
+</body>
+
+
+</html>
