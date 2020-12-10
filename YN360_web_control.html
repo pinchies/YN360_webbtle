@@ -192,7 +192,8 @@
 
 	#content {max-width:1200px; max-height:600px;  padding-bottom:8px ; margin:0px auto; text-align:center; border:1px solid #999; border-radius:5px;  vertical-align:middle; }
 
-	#connectsection {display:block;}
+	#connectsection {display:block; }
+	#connectsection li {max-width:300px; margin: 20px auto;}
 	#rgbsection, #tonesection, #octosection {display:none;}
 
 	.slidecontainer {margin:0px 10px; width:250px; display: inline-block;height:25px;}
@@ -237,8 +238,10 @@
 		
 		<div id="connectsection" >
 		    
-		    <input class="button" type="button" id="connectButton" value="Connect / Pair" /><input class="button" type="button" id="disconnectButton" value="Disconnect" />
-		    
+		    <ul>
+		        <li><input class="button" type="button" id="connectButton" value="Connect / Pair" /><input class="button" type="button" id="disconnectButton" value="Disconnect" /></li>
+		        <li><p>Please note:  this page requires <a href="https://caniuse.com/web-bluetooth">Web Bluetooth</a> support to work, so you will need to use Google Chrome, Microsoft Edge or Opera.</p></li>
+		    </ul>
 		</div>    
 		    
 		<div id="rgbsection" >
