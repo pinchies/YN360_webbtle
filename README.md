@@ -3,6 +3,8 @@ Web-based controller for Yongnuo YN360 Light Wand via Web Bluetooth (LE) API
 
 Note: **requires Google Chrome, Microsoft Edge, or Opera**.
 
+Try for yourself: https://samuelpinches.com.au/yn360.html
+
 Features:
 - Supports YN360 and YN360-II Light Wands
 - RGB colour and brightness control
@@ -15,6 +17,7 @@ Features:
 
 Version History:
 - V1.0: colour and brightness control
+- V1.1: Live 'instant' control
 - V1.2: multi channel support and fading support
 
 Development Process
