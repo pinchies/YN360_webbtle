@@ -19,6 +19,7 @@ Version History:
 - V1.0: colour and brightness control
 - V1.1: Live 'instant' control
 - V1.2: multi channel support and fading support
+- V1.21: Bugs + cleanup
 
 Development Process
 - Code quality: poor
