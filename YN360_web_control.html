@@ -209,10 +209,8 @@
     
     #rgbsection li, #tonesection li {display:flex; flex-wrap:wrap; align-items:center;justify-content: center;margin:10px 10px;}
     #rgbsection .colorsection label, #tonesection .whitesection label {width:50px; text-align:right; margin-right:10px;}
-    #rgbsection input[type=number], #tonesection input[type=number], #octosection input[type=number] {width:40px;}
+    #rgbsection input[type=number], #tonesection input[type=number], #octosection input[type=number] {width:50px;}
     #tonesection .whitesection label {width:150px}
-
-
 
 	#colorGrid {display:block; height:60px; width:240px; background:#CCC; border:1px solid black; margin:10px auto; padding 0px;}
 	#colorGrid div.row {display:block; width:240px; height:30px; margin:0px; padding 0px;}
@@ -223,7 +221,6 @@
     input[type=button] { margin:5px 5px; padding:6px 8px; font-weight:bold; background-color:#EEE; border-radius: 5px;}
     input[type=checkbox] { margin-left:20px; }
     input[type=button]:hover {background-color:#FFF;}
-
 
 	</style>
 
@@ -247,7 +244,7 @@
 		<div id="rgbsection" >
 		<ul>
 		    <li>
-		        <input id="colorPicker" type="color" style="width:130px; height:50px;"/>
+		        <input id="colorPicker" type="color" style="width:250px; height:50px;"/>
 		    </li>
 		    <li id="redsection" class="colorsection">
 		        <label>Red: </label><input id="redhex" type="number" min="0" max="255" value="0"/><div class="slidecontainer"><input type="range" min="0" max="255" value="0" class="slider" id="redhexslider"></div>
@@ -347,7 +344,7 @@
 	<div id="bottom" >
 		<div style="padding:5px;">
 			<hr/>
-			<p>v 1.2, 10/12/20, Last Command: <span id="deviceHeartbeat"></span></p>
+			<p>v 1.21, 11/12/20, Last Command: <span id="deviceHeartbeat"></span></p>
 		</div>
 		<div id="footer">
 			<div><a href="https://samuelpinches.com.au">Samuel Pinches</a>, Dec 2020 </div>
@@ -377,7 +374,6 @@ function decimalToHex(d, padding) {
     while (hex.length < padding) {hex = "0" + hex;}
     return hex;
 }
-
 
 const primaryServiceUuid = 'f000aa60-0451-4000-b000-000000000000';
 const receiveCharUuid = 'f000aa63-0451-4000-b000-000000000000';
@@ -461,13 +457,18 @@ const greenhexslider = document.getElementById('greenhexslider');
 const bluehex = document.getElementById('bluehex');
 const bluehexslider = document.getElementById('bluehexslider');
 
+/* ----- Init -------*/
 
 var mouseDown = false;
-    const allbuttons = document.querySelectorAll('input[type=button]');
-    allbuttons.forEach(allbuttons => allbuttons.disabled = true);
-    connectButton.disabled = false;
+const allbuttons = document.querySelectorAll('input[type=button]');
+allbuttons.forEach(allbuttons => allbuttons.disabled = true);
+connectButton.disabled = false;
 
 var lastRGB = [0,0,0];
+
+/* ----- Start Functions-------*/
+
+function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
 
   redhexslider.onmousedown = async function(){ mouseDown = true; await updateColorSlider(); };
 greenhexslider.onmousedown = async function(){ mouseDown = true; await updateColorSlider(); };
@@ -475,7 +476,6 @@ greenhexslider.onmousedown = async function(){ mouseDown = true; await updateCol
   redhexslider.onmouseup   = function(){ mouseDown = false; };
 greenhexslider.onmouseup   = function(){ mouseDown = false; };
  bluehexslider.onmouseup   = function(){ mouseDown = false; };
-
 
 warmhexsliders[0].onmousedown = async function(){ mouseDown = true; await updateToneSliders(0); };
 warmhexsliders[1].onmousedown = async function(){ mouseDown = true; await updateToneSliders(1); };
@@ -514,6 +514,8 @@ coolhexsliders[6].onmouseup = function(){ mouseDown = false; };
 coolhexsliders[7].onmouseup = function(){ mouseDown = false; };
 coolhexsliders[8].onmouseup = function(){ mouseDown = false; };
 
+/* ----- UI Functions -------*/
+
 resetMode = function(){
     connectsection.style.display = 'none';
     rgbsection.style.display = 'none';
@@ -550,6 +552,20 @@ setOctoMode.onclick = function(){
  }; 
  
  
+function showCommand(data){
+    const value0 = data[0].toString(16);
+    const value1 = data[1].toString(16);
+    const value2 = data[2].toString(16);
+    const value3 = data[3].toString(16);
+    const value4 = data[4].toString(16);
+    const value5 = data[5].toString(16);
+    deviceHeartbeat.innerText = value5 + " " + value4+" "+value3+" "+value2+" "+value1+" "+value0;
+    return;
+}
+
+
+ /* ----- Octo Functions -------*/
+
  async function octoAll(cool,warm) {
     const inputs = document.querySelectorAll('input.octoButton');
     inputs.forEach(input => input.disabled = true);
@@ -570,6 +586,9 @@ setOctoMode.onclick = function(){
  octoOff.onclick  = async function(){await octoAll(0x0, 0x0 );}
  
  
+ /* ----- Tone Functions -------*/
+
+ 
  toneFadeOn.onclick  = async function(){
     let start=0; let end = 8; var i; 
     var fade=[1,6,14,25,39,56,76,99]
@@ -582,6 +601,40 @@ setOctoMode.onclick = function(){
     for (i = start; i < end; i++) { await updateTone(1,fade[i],fade[i]);}
  }
  
+ 
+coolhex[0].onchange = function(){if(coolhex[0].value>99){coolhex[0].value = 99;} if(coolhex[0].value<0){coolhex[0].value = 0;} coolhexsliders[0].value = coolhex[0].value; updateToneSliders(0);}
+warmhex[0].onchange = function(){if(warmhex[0].value>99){warmhex[0].value = 99;} if(warmhex[0].value<0){warmhex[0].value = 0;} warmhexsliders[0].value = warmhex[0].value; updateToneSliders(0);}
+
+toneButton.onclick = async () => {
+  const data = new Uint8Array([0xae,0xaa,channel.value,coolhex[0].value,warmhex[0].value,0x56]); //on
+  await sendCharacteristic.writeValue(data);
+  showCommand(data);
+};
+
+offToneButton.onclick = async () => {
+  const data = new Uint8Array([0xae,0xee,channel.value,coolhex[0].value,warmhex[0].value,0x56]); //off
+  await sendCharacteristic.writeValue(data);
+  showCommand(data);
+}
+
+async function updateTone(chan,cool,warm) {
+        if(chan==0){chan=1;}
+        var data = new Uint8Array([0xae,0xaa,chan,cool,warm,0x56]); //on
+        await sendCharacteristic.writeValue(data)
+        showCommand(data);
+        return;
+}
+
+async function updateToneSliders(chan=0) {
+    warmhex[chan].value = warmhexsliders[chan].value;
+    coolhex[chan].value = coolhexsliders[chan].value;
+    if (liveToneCheckbox.checked){await updateTone(chan,coolhexsliders[chan].value,warmhexsliders[chan].value);    }
+    if(mouseDown){setTimeout(await updateToneSliders(chan), 10);}
+    return;
+}
+
+ /* ----- Colour Functions -------*/
+
  offColorButton.onclick = async () => {
   const rgb = hexToRgb(colorPicker.value)
   const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
@@ -589,20 +642,116 @@ setOctoMode.onclick = function(){
     showCommand(data);
 }
 
-
+function updateColorPicker(){colorPicker.value =  rgbToHex(redhex.value,greenhex.value,bluehex.value);}
 redhex.onchange = function(){if(redhex.value>255){redhex.value = 255;} redhexslider.value = redhex.value; updateColorPicker(); updateColorSlider();}
-redhexslider.onchange = function(){redhex.value = redhexslider.value; updateColorPicker();}
 bluehex.onchange = function(){if(bluehex.value>255){bluehex.value = 255;}bluehexslider.value = bluehex.value; updateColorPicker(); updateColorSlider();}
-bluehexslider.onchange = function(){bluehex.value = bluehexslider.value; updateColorPicker();}
 greenhex.onchange = function(){if(greenhex.value>255){greenhex.value = 255;} greenhexslider.value = greenhex.value; updateColorPicker(); updateColorSlider(); }
-greenhexslider.onchange = function(){greenhex.value = greenhexslider.value; updateColorPicker();}
 
-function updateColorPicker(){
-colorPicker.value =  rgbToHex(redhex.value,greenhex.value,bluehex.value);
+colorPicker.onchange = function(){
+    const rgb = hexToRgb(colorPicker.value);
+    redhexslider.value = rgb[0];
+    greenhexslider.value = rgb[1];
+    bluehexslider.value = rgb[2];
+    redhex.value = rgb[0];
+    greenhex.value = rgb[1];
+    bluehex.value = rgb[2];   
+    updateColorSlider();
+    return;
 }
 
-coolhex[0].onchange = function(){if(coolhex[0].value>99){coolhex[0].value = 99;} if(coolhex[0].value<0){coolhex[0].value = 0;} coolhexsliders[0].value = coolhex[0].value; updateToneSliders(0);}
-warmhex[0].onchange = function(){if(warmhex[0].value>99){warmhex[0].value = 99;} if(warmhex[0].value<0){warmhex[0].value = 0;} warmhexsliders[0].value = warmhex[0].value; updateToneSliders(0);}
+colorFadeButton.onclick = async function() {
+    let oldR = parseInt(lastRGB[0]);
+    let oldG = parseInt(lastRGB[1]);
+    let oldB = parseInt(lastRGB[2]);
+    let newR = parseInt(redhexslider.value);
+    let newG = parseInt(greenhexslider.value);
+    let newB = parseInt(bluehexslider.value);
+    let diffR = newR - oldR;
+    let diffG = newG - oldG;
+    let diffB = newB - oldB;
+    let sequenceR = [oldR,0.0,0.0,0.0,0.0,0.0,0.0,newR];
+    let sequenceG = [oldG,0.0,0.0,0.0,0.0,0.0,0.0,newG];
+    let sequenceB = [oldB,0.0,0.0,0.0,0.0,0.0,0.0,newB];
+    var i;
+    for (i = 1; i < 7; i++) {
+      sequenceR[i]=sequenceR[i-1] + diffR/8.0;
+      sequenceG[i]=sequenceG[i-1] + diffG/8.0;
+      sequenceB[i]=sequenceB[i-1] + diffB/8.0;
+    } 
+    for (i = 1; i < 7; i++) {
+      sequenceR[i]=Math.round(sequenceR[i]);
+      sequenceG[i]=Math.round(sequenceG[i]);
+      sequenceB[i]=Math.round(sequenceB[i]);
+    } 
+    for (i = 0; i < 8; i++) {
+      await updateColor(sequenceR[i],sequenceG[i],sequenceB[i])
+    } 
+}
+
+function setColor(hex){
+    colorPicker.value = hex;
+    rgb = hexToRgb(hex);
+    redhexslider.value = rgb[0];
+    greenhexslider.value = rgb[1];
+    bluehexslider.value = rgb[2];
+    redhex.value = rgb[0];
+    greenhex.value = rgb[1];
+    bluehex.value = rgb[2];    
+    if(liveColorCheckbox.checked== true) {updateColor(rgb[0],rgb[1],rgb[2]);}
+    return;
+}
+
+async function updateColor(r,g,b) {
+    var data = new Uint8Array([0xae,0xa1,r,g,b,0x56]); //on
+    lastRGB = [r,g,b];
+    await sendCharacteristic.writeValue(data);
+    showCommand(data);
+}
+
+async function updateColorSlider() {
+    redhex.value = redhexslider.value;
+    greenhex.value = greenhexslider.value;
+    bluehex.value = bluehexslider.value;
+    updateColorPicker();
+    if(liveColorCheckbox.checked){updateColor(redhexslider.value,greenhexslider.value,bluehexslider.value) }
+    if(mouseDown){setTimeout(await updateColorSlider, 10);}
+    return;
+}
+
+colorButton.onclick = async () => {
+    const rgb = hexToRgb(colorPicker.value)
+    const data = new Uint8Array([0xae,0xa1,rgb[0],rgb[1],rgb[2],0x56]); //on
+    lastRGB = [rgb[0],rgb[1],rgb[2]];
+    await sendCharacteristic.writeValue(data);
+    showCommand(data);
+};
+
+offColorButton.onclick = async () => {
+    const rgb = hexToRgb(colorPicker.value)
+    const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
+    lastRGB = [0,0,0];
+    await sendCharacteristic.writeValue(data);
+    showCommand(data);
+}
+
+colorButton.onclick = async () => {
+    const rgb = hexToRgb(colorPicker.value)
+    const data = new Uint8Array([0xae,0xa1,rgb[0],rgb[1],rgb[2],0x56]); //on
+    lastRGB = [rgb[0],rgb[1],rgb[2]];
+    await sendCharacteristic.writeValue(data);
+    showCommand(data);
+};
+
+offColorButton.onclick = async () => {
+    const rgb = hexToRgb(colorPicker.value)
+    const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
+    lastRGB = [0,0,0];
+    await sendCharacteristic.writeValue(data);
+    showCommand(data);
+}
+
+
+/* ----- BT Communication Functions -------*/
 
 
 let device, sendCharacteristic, receiveCharacteristic;
@@ -632,142 +781,10 @@ const listen = () => {
     const value3 = evt.target.value.getUint8(3, true).toString(16);
     const value4 = evt.target.value.getUint8(4, true).toString(16);
     const value5 = evt.target.value.getUint8(5, true).toString(16);
-
     deviceHeartbeat.innerText = value5 + " " + value4+" "+value3+" "+value2+" "+value1+" "+value0;
 });
   receiveCharacteristic.startNotifications();  
 };
-
-function showCommand(data){
-    const value0 = data[0].toString(16);
-    const value1 = data[1].toString(16);
-    const value2 = data[2].toString(16);
-    const value3 = data[3].toString(16);
-    const value4 = data[4].toString(16);
-    const value5 = data[5].toString(16);
-    deviceHeartbeat.innerText = value5 + " " + value4+" "+value3+" "+value2+" "+value1+" "+value0;
-    return;
-}
-
-
-
-colorPicker.onchange = function(){
-    const rgb = hexToRgb(colorPicker.value);
-    redhexslider.value = rgb[0];
-    greenhexslider.value = rgb[1];
-    bluehexslider.value = rgb[2];
-    redhex.value = rgb[0];
-    greenhex.value = rgb[1];
-    bluehex.value = rgb[2];   
-    updateColorSlider();
-    return;
-}
-
-colorFadeButton.onclick = async function() {
-
-    console.log(lastRGB[2]);
-    let oldR = parseInt(lastRGB[0]);
-    let oldG = parseInt(lastRGB[1]);
-    let oldB = parseInt(lastRGB[2]);
-    let newR = parseInt(redhexslider.value);
-    let newG = parseInt(greenhexslider.value);
-    let newB = parseInt(bluehexslider.value);
-    let diffR = newR - oldR;
-    let diffG = newG - oldG;
-    let diffB = newB - oldB;
-    let sequenceR = [oldR,0.0,0.0,0.0,0.0,0.0,0.0,newR];
-    let sequenceG = [oldG,0.0,0.0,0.0,0.0,0.0,0.0,newG];
-    let sequenceB = [oldB,0.0,0.0,0.0,0.0,0.0,0.0,newB];
-    var i;
-    for (i = 1; i < 7; i++) {
-      sequenceR[i]=sequenceR[i-1] + diffR/8.0;
-      sequenceG[i]=sequenceG[i-1] + diffG/8.0;
-      sequenceB[i]=sequenceB[i-1] + diffB/8.0;
-    } 
-    for (i = 1; i < 7; i++) {
-      sequenceR[i]=Math.round(sequenceR[i]);
-      sequenceG[i]=Math.round(sequenceG[i]);
-      sequenceB[i]=Math.round(sequenceB[i]);
-    } 
-    for (i = 0; i < 8; i++) {
-      await updateColor(sequenceR[i],sequenceG[i],sequenceB[i])
-    } 
-}
-
-
-function setColor(hex){
-    colorPicker.value = hex;
-    rgb = hexToRgb(hex);
-    redhexslider.value = rgb[0];
-    greenhexslider.value = rgb[1];
-    bluehexslider.value = rgb[2];
-    redhex.value = rgb[0];
-    greenhex.value = rgb[1];
-    bluehex.value = rgb[2];    
-    if(liveColorCheckbox.checked== true) {updateColor(rgb[0],rgb[1],rgb[2]);}
-    return;
-}
-
-
-async function updateColor(r,g,b) {
-    var data = new Uint8Array([0xae,0xa1,r,g,b,0x56]); //on
-    lastRGB = [r,g,b];
-    await sendCharacteristic.writeValue(data);
-    showCommand(data);
-}
-
-colorButton.onclick = async () => {
-    const rgb = hexToRgb(colorPicker.value)
-    const data = new Uint8Array([0xae,0xa1,rgb[0],rgb[1],rgb[2],0x56]); //on
-    lastRGB = [rgb[0],rgb[1],rgb[2]];
-    await sendCharacteristic.writeValue(data);
-    showCommand(data);
-};
-
-offColorButton.onclick = async () => {
-    const rgb = hexToRgb(colorPicker.value)
-    const data = new Uint8Array([0xae,0xee,rgb[0],rgb[1],rgb[2],0x56]); //off
-    lastRGB = [0,0,0];
-    await sendCharacteristic.writeValue(data);
-    showCommand(data);
-}
-
-toneButton.onclick = async () => {
-  const data = new Uint8Array([0xae,0xaa,channel.value,coolhex[0].value,warmhex[0].value,0x56]); //on
-  await sendCharacteristic.writeValue(data);
-  showCommand(data);
-};
-
-offToneButton.onclick = async () => {
-  const data = new Uint8Array([0xae,0xee,channel.value,coolhex[0].value,warmhex[0].value,0x56]); //off
-  await sendCharacteristic.writeValue(data);
-  showCommand(data);
-}
-
-async function updateTone(chan,cool,warm) {
-        if(chan==0){chan=1;}
-        var data = new Uint8Array([0xae,0xaa,chan,cool,warm,0x56]); //on
-        await sendCharacteristic.writeValue(data)
-        showCommand(data);
-        return;
-}
-
-async function updateColorSlider() {
-    redhex.value = redhexslider.value;
-    greenhex.value = greenhexslider.value;
-    bluehex.value = bluehexslider.value;
-    if(liveColorCheckbox.checked){updateColor(redhexslider.value,greenhexslider.value,bluehexslider.value) }
-    if(mouseDown){setTimeout(await updateColorSlider, 10);}
-}
-
-
-async function updateToneSliders(chan=0) {
-    warmhex[chan].value = warmhexsliders[chan].value;
-    coolhex[chan].value = coolhexsliders[chan].value;
-    await updateTone(chan,coolhexsliders[chan].value,warmhexsliders[chan].value);
-    if(mouseDown){setTimeout(updateToneSliders(chan), 10);}
-    return;
-}
 
 disconnectButton.onclick = async () => {
   await device.gatt.disconnect();
@@ -778,21 +795,13 @@ const disconnect = () => {
   device = null;
   receiveCharacteristic = null;
   sendCharacteristic = null;
-
   connected.style.display = 'none';
   connectButton.style.display = 'initial';
   disconnectButton.style.display = 'none';
 };
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
 </script>
 
-
 </body>
-
 
 </html>
